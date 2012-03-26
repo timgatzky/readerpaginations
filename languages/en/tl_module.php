@@ -48,6 +48,9 @@ $GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['cal_all']		= 'All e
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['news_month']	= 'Current month';
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['news_year']	= 'Current year';
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['news_all']		= 'All posts';
+$GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['cat_month']	= 'Current month';
+$GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['cat_year']		= 'Current year';
+$GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['cat_all']		= 'All entries';
 
 /**
  * Legends

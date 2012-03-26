@@ -21,67 +21,38 @@
  * Software Foundation website at <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
- * @copyright  Tim Gatzky 2012 
+ * @copyright  Tim Gatzky 2011 
  * @author     Tim Gatzky <info@tim-gatzky.de>
- * @package    readerpaginations 
+ * @package    eventreaderpagination
  * @license    LGPL 
  * @filesource
  */
 
-/**
- * HOOKS
- */
-$GLOBALS['TL_HOOKS']['parseCatalog'][] = array('CatalogReaderPaginationHelper','parseCatalogHook');
-
-/**
- * Initialization, Globals
- */
-$GLOBALS['READERPAGINATION'] = array();
 
 
 /**
- * Helper function to switch between pagination classes 
- * @param object
- * @return string
- * @throw string
+ * Add palettes to tl_calendar_events
  */
-function addReaderPagination($objModule)
-{
-	if(!is_object($objModule))
-	{
-		throw new Exception('illegal call!');
-	}
-	
-	
-	$strBuffer = '';
-	switch($objModule->type)
-	{
-		case 'eventreader':
-			
-			$objPagination = new EventReaderPagination($objModule); 
-			$strBuffer = $objPagination->generate();
-			
-			break;
-		case 'newsreader':
-			
-			$objPagination = new NewsReaderPagination($objModule); 
-			$strBuffer = $objPagination->generate();
-			
-			break;
-		case 'catalogreader':
-			
-			$objPagination = new CatalogReaderPagination($objModule); 
-			$strBuffer = $objPagination->generate();
-			
-			break;
-		
-		default: $strBuffer = '';
-			break;
-	}
-	
-	return $strBuffer;
-}
+$GLOBALS['TL_DCA']['tl_catalog_types']['palettes']['default'] = str_replace
+(
+	'publishField,allowManualSort',
+	'publishField,allowManualSort,hide_in_pagination,',
+	$GLOBALS['TL_DCA']['tl_catalog_types']['palettes']['default']
+);
 
 
+
+/**
+ * Add fields to tl_calendar_events
+ */
+$GLOBALS['TL_DCA']['tl_catalog_types']['fields']['hide_in_pagination'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_types']['hide_in_pagination'],
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options_callback'        => array('tl_catalog_types', 'getCheckBoxFields'),
+	'eval'                    => array('mandatory'=>false, 'includeBlankOption'=>true, 'tl_class'=>'w50'),
+	'doNotCopy'               => true,
+);
 
 ?>

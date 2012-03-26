@@ -1,11 +1,15 @@
-catalognotelist_cataloglist
-===============
+readerpaginations
+=================
 
 About
 -----
 
-Contao Module, Catalog
+Contao extension
 
-This Module provides a new Frontend-Module to display the catalog items collected in the catalognotelist similar to the cataloglist module.
-It is possible to select the number of catalogs to be listed.
-Any item can be removed directly from the list or update is value.
+This extension brings a new pagination option to the News-reader, Event-reader, Catalog-reader Module. It also includes the option to hide certain events / posts in the pagination. This is usefull for displaying future events/posts with no final content in the lists as a teaser but skip those when circling through the items.
+
+    Settings are: The skope/format of the pagination: current month, current year, all entries
+    Number of links
+    Pagination-Template/Layout-Template
+
+In Contao Version 2.9 the deliverd Module-Template files must be copied to the /templates Folder manually.

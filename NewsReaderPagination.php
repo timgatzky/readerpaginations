@@ -88,9 +88,10 @@ class NewsReaderPagination extends ModuleNewsList
      * generate
      * @return string
      */
-	public function generate($strSeparator=' ')
+	public function generate($strSeparator=' ', $blnShowFirstLast=true)
 	{
 		$this->strSeperator = $strSeparator;
+		$this->blnShowFirstLast = $blnShowFirstLast;
 		
 		// Return if there is only one page
 		if ($this->intTotalItems < 2 || $this->intItem < 1)

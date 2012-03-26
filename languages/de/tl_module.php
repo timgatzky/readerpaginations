@@ -36,6 +36,8 @@ $GLOBALS['TL_LANG']['tl_module']['addReaderPagination']						= array('Pagination
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_template'] 				= array('Layout-Template', 'Hier können Sie das Paginations-Template auswählen.');
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_numberOfLinks'] 			= array('Anzahl an Links', 'Legen Sie fest wieviele Links angezeigt werden.');
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_format'] 				= array('Anzeigeformat', 'Hier können Sie das Anzeigeformat/die Spannweite der Pagination auswählen.');
+$GLOBALS['TL_LANG']['tl_module']['readerpagination_catalogTitleField'] 		= array('Titelfeld', 'Bitte wählen Sie das Feld, das als Referenz für die Bildung des Link-Titels genutzt werden soll');
+
 
 /**
  * References
@@ -48,6 +50,9 @@ $GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['cal_all']		= 'Alle 
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['news_month']	= 'Aktueller Monat';
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['news_year']	= 'Aktuelles Jahr';
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['news_all']		= 'Alle Beträge';
+$GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['cat_month']	= 'Aktueller Monat';
+$GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['cat_year']		= 'Aktuelles Jahr';
+$GLOBALS['TL_LANG']['tl_module']['readerpagination_format']['cat_all']		= 'Alle Einträge';
 
 /**
  * Legends

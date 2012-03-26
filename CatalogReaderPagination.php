@@ -29,7 +29,7 @@
  */
 
 
-class EventReaderPagination extends Events
+class CatalogReaderPagination extends ModuleCatalog
 {
 	/**
 	 * Template
@@ -43,28 +43,27 @@ class EventReaderPagination extends Events
 	 */
 	public function __construct($objModule)
 	{
-		if($objModule->type != 'eventreader' || !is_object($objModule))
+		if($objModule->type != 'catalogreader' || !is_object($objModule))
 		{
 			 throw new Exception('illegal call!');
 		}
-		
 		$this->import('Input');
 		$this->import('Database');
 		
 		// Apply settings
 		$this->strTemplate = $objModule->readerpagination_template;
-		$this->showTitles = $objModule->readerpagination_showTitles;		
 		
-		$this->archives = $objModule->cal_calendar;
-		$this->cal_order = $objModule->cal_order;
+		$this->archives = $objModule->news_archives;
 		$this->pagination_format = $objModule->readerpagination_format;
+		$this->strCatTable = $objModule->strTable;
+		$this->catalogTitleField = $objModule->readerpagination_catalogTitleField;
 		
 		$this->intItem = 1;
-		$this->strItem = $this->Input->get('events');
-		$this->arrItems = $this->getItems(); // Get events in scope
+		$this->strItem = $this->Input->get('items');
+		$this->arrItems = $this->getItems(); // Get catalog entries in scope
 		$this->intTotalItems = count($this->arrItems);
 		$this->intNumberOfLinks = $objModule->readerpagination_numberOfLinks;
-						
+					
 		// Initialize default labels
 		$this->lblFirst = $GLOBALS['TL_LANG']['MSC']['readerpaginations']['first'];
 		$this->lblPrevious = $GLOBALS['TL_LANG']['MSC']['readerpaginations']['previous'];
@@ -72,7 +71,7 @@ class EventReaderPagination extends Events
 		$this->lblLast = $GLOBALS['TL_LANG']['MSC']['readerpaginations']['last'];
 		$this->lblTotal = $GLOBALS['TL_LANG']['MSC']['readerpaginations']['total'];
 		
-		// get current event index
+		// get current item index
 		foreach($this->arrItems as $index => $item)
 		{
 			if(!$GLOBALS['TL_CONFIG']['disableAlias'])
@@ -83,7 +82,7 @@ class EventReaderPagination extends Events
 			{
 				if($item['id'] == $this->strItem) $this->intItem = $index;
 			}
-		}
+		}	
 	}
 	
 	/**
@@ -142,6 +141,7 @@ class EventReaderPagination extends Events
 		   'href' => $this->linkToItem($this->intTotalItems),
 		   'title' => sprintf(specialchars($GLOBALS['TL_LANG']['MSC']['readerpaginations']['goTo'] ), ($this->getItemTitle($this->intTotalItems) ) )
 		);
+
 		
 		global $objPage;
 		$strTagClose = ($objPage->outputFormat == 'xhtml') ? ' />' : '>';
@@ -210,10 +210,11 @@ class EventReaderPagination extends Events
 		}
 
 		for ($i=$intFirstLink; $i<=$intLastLink; $i++)
-		{
+		{	
 			if ($i == $this->intItem)
 			{
-				$arrLinks[] = sprintf('<li class="active"><span class="current active">%s</span></li>', '<span class="index">' . $i . '</span>' . '<span class="title">' . $this->getItemTitle($i) . '</span>');
+				$arrLinks[] = sprintf('<li class="active"><span class="current active">%s</span></li>',
+									 '<span class="index">' . $i . '</span>' . '<span class="title">' . $this->getItemTitle($i) . '</span>');
 				continue;
 			}
 								
@@ -221,7 +222,7 @@ class EventReaderPagination extends Events
 								$this->linkToItem($i),
 								sprintf(specialchars($GLOBALS['TL_LANG']['MSC']['readerpaginations']['goTo']), $this->getItemTitle($i)),
 							 	 '<span class="index">' . $i . '</span>'  . '<span class="title">' . $this->getItemTitle($i) . '</span>'
-							 	 );
+								);
 		}
 
 		return implode($strSeparator, $arrLinks);
@@ -283,144 +284,52 @@ class EventReaderPagination extends Events
 	{
 		return ($this->blnShowFirstLast && $this->intItem < ($this->intTotalItems - 1)) ? true : false;
 	}
+
 	
 	
 	/**
-	 * Helper function to generate an array of events. Basically does the same as the Eventlist module
+	 * Helper function to generate an array of news articles. Basically does the same as the Newslist module
 	 * @return array
 	 */
 	private function getItems()
 	{
 		global $objPage;
 		
-		$blnClearInput = false;
-
-		// Jump to the current period
-		if (!isset($_GET['year']) && !isset($_GET['month']) && !isset($_GET['day']))
-		{
-			switch ($this->pagination_format)
-			{
-				case 'cal_year':
-					$this->Input->setGet('year', date('Y'));
-					break;
-
-				case 'cal_month':
-					$this->Input->setGet('month', date('Ym'));
-					break;
-
-				case 'cal_day':
-					$this->Input->setGet('day', date('Ymd'));
-					break;
-			}
-
-			$blnClearInput = true;
-		}
+		$arrEntries = $GLOBALS['READERPAGINATION']['catalog']; // created in CatalogReaderPaginationHelper, called from parseCatalog-HOOK
 		
-		$blnDynamicFormat = (!$this->cal_ignoreDynamic && in_array($this->pagination_format, array('cal_day', 'cal_month', 'cal_year')));
-
-		// Display year
-		if ($blnDynamicFormat && $this->Input->get('year'))
-		{
-			$this->Date = new Date($this->Input->get('year'), 'Y');
-			$this->pagination_format = 'cal_year';
-			$this->headline .= ' ' . date('Y', $this->Date->tstamp);
-		}
-
-		// Display month
-		elseif ($blnDynamicFormat && $this->Input->get('month'))
-		{
-			$this->Date = new Date($this->Input->get('month'), 'Ym');
-			$this->pagination_format = 'cal_month';
-			$this->headline .= ' ' . $this->parseDate('F Y', $this->Date->tstamp);
-		}
-
-		// Display day
-		elseif ($blnDynamicFormat && $this->Input->get('day'))
-		{
-			$this->Date = new Date($this->Input->get('day'), 'Ymd');
-			$this->pagination_format = 'cal_day';
-			$this->headline .= ' ' . $this->parseDate($objPage->dateFormat, $this->Date->tstamp);
-		}
-
-		// Display all events or upcoming/past events
-		else
-		{
-			$this->Date = new Date();
-		}
 		
-		list($strBegin, $strEnd, $strEmpty) = $this->getDatesFromFormat($this->Date, $this->pagination_format);
-
-		// Get all events
-		$arrAllEvents = $this->getAllEvents($this->archives, $strBegin, $strEnd);
-		$sort = ($this->cal_order == 'descending') ? 'krsort' : 'ksort'; 
-		
-		// Sort the days
-		$sort($arrAllEvents);
-		// Sort the events
-		foreach (array_keys($arrAllEvents) as $key)
+		// add keys for pagination (title, href)
+		foreach($arrEntries as $i => $entry)
 		{
-			$sort($arrAllEvents[$key]);
+			// get alias
+       		$strAlias = (!$GLOBALS['TL_CONFIG']['disableAlias'] && $entry['alias'] != '') ? $entry['alias'] : $entry['id'];
+ 			
+ 			$arrTmp = array
+ 			(
+ 				'href' => ampersand($this->generateFrontendUrl($objPage->row(), ((isset($GLOBALS['TL_CONFIG']['useAutoItem']) && $GLOBALS['TL_CONFIG']['useAutoItem']) ?  '/' : '/items/') . $strAlias)),
+                'title' => specialchars($entry[$this->catalogTitleField]),
+          	);
+ 			
+ 			$arrResult[] = array_merge($arrEntries[$i], $arrTmp);
+ 			unset($arrTmp);
 		}
-
-		$arrEvents = array();
-		$dateBegin = date('Ymd', $strBegin);
-		$dateEnd = date('Ymd', $strEnd);
-
-
-		// Remove events outside the scope AND events that should not be listet in the pagination
-		foreach ($arrAllEvents as $key=>$days)
-		{
-			if ($key < $dateBegin || $key > $dateEnd)
-			{
-				continue;
-			}
-			
-			
-			foreach ($days as $day=>$events)
-			{
-				foreach ($events as $event)
-				{
-					$event['firstDay'] = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
-					$event['firstDate'] = $this->parseDate($objPage->dateFormat, $day);
-					$event['datetime'] = date('Y-m-d', $day);
-					
-					if(!$event['hide_in_pagination'])
-					{
-						$arrEvents[] = $event;
-					}
-				}
-			}
-		}
-		unset($arrAllEvents);
-
-		//-- Short view
-		$tmpArray = array();
-		$lastId = -1;
-		foreach($arrEvents as $key => $event)
-		{
-			// create a unique list, sort out events with the same id
-			if($lastId != $event['id'])
-			{
-				$tmpArray[$key] = $event;
-				$lastId = $event['id'];
-			}
-		}
-		//--
-		$arrEvents = $tmpArray;
-		
+		$arrEntries = $arrResult;
+		unset($arrResult);
+				
 		// Higher the keys of the array by 1
-		$tmpArray = array();
-		foreach($arrEvents as $key => $event)
+		$arrTmp = array();
+		foreach($arrEntries as $key => $value)
 		{
-			$tmpArray[$key+1] = $event;
+			$arrTmp[$key+1] = $value;
 		}
-		ksort($tmpArray);
+		ksort($arrTmp);
 		
-		$arrEvents = $tmpArray;
+		$arrEntries = $arrTmp;
 		
-		unset($tmpArray);
+		unset($arrTmp);
 
-		return $arrEvents;
+				
+		return $arrEntries;
 	}
 	
 	

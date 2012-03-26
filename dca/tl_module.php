@@ -70,6 +70,13 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader'] = str_replace
 	$GLOBALS['TL_DCA']['tl_module']['palettes']['eventreader']	
 );
 
+// Catalog Reader
+$GLOBALS['TL_DCA']['tl_module']['palettes']['catalogreader'] = str_replace
+(
+	'{protected_legend:hide}',
+	'{readerpagination_legend:hide},addReaderPagination;{protected_legend:hide}',
+	$GLOBALS['TL_DCA']['tl_module']['palettes']['catalogreader']	
+);
 
 	
 /**
@@ -119,6 +126,15 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_format'] = array
 	'eval'                    => array('tl_class'=>'w50'),
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_catalogTitleField'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['readerpagination_catalogTitleField'],
+	'exclude'                 => true,
+	'inputType'               => 'radio',
+	//'foreignKey'              => 'tl_catalog_types.name',
+	'options_callback'        => array('tl_module_catalog', 'getCatalogFields'),
+	'eval'                    => array('tl_class'=>'clr', 'mandatory'=> false, 'submitOnChange'=> false)
+);
 
 
 class tl_module_readerpagination extends Backend 
@@ -136,7 +152,7 @@ class tl_module_readerpagination extends Backend
 				$GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_format'] = array
 				(
 					'label'                   => &$GLOBALS['TL_LANG']['tl_module']['readerpagination_format'],
-					'default'                 => 'cal_month',
+					'default'                 => 'cal_all',
 					'exclude'                 => false,
 					'inputType'               => 'select',
 					//'options_callback'        => array('tl_module_eventreaderpagination', 'getCalFormats'),
@@ -151,7 +167,7 @@ class tl_module_readerpagination extends Backend
 				$GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_format'] = array
 				(
 					'label'                   => &$GLOBALS['TL_LANG']['tl_module']['readerpagination_format'],
-					'default'                 => 'news_month',
+					'default'                 => 'news_all',
 					'exclude'                 => false,
 					'inputType'               => 'select',
 					'options'				  => array('news_month', 'news_year', 'news_all'),
@@ -159,8 +175,26 @@ class tl_module_readerpagination extends Backend
 					'eval'                    => array('tl_class'=>'w50'),	
 				); 
 
-				
 				break;
+			case 'catalogreader':
+				
+				// add catalog title field selection to subpalette
+				$GLOBALS['TL_DCA']['tl_module']['subpalettes']['addReaderPagination'] = 'readerpagination_format,readerpagination_numberOfLinks,readerpagination_template,readerpagination_catalogTitleField';			
+				
+				$GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_format'] = array
+				(
+					'label'                   => &$GLOBALS['TL_LANG']['tl_module']['readerpagination_format'],
+					'default'                 => 'cat_all',
+					'exclude'                 => false,
+					'inputType'               => 'select',
+					'options'				  => array('cat_month', 'cat_year', 'cat_all'),
+					'reference'               => &$GLOBALS['TL_LANG']['tl_module']['readerpagination_format'],
+					'eval'                    => array('tl_class'=>'w50'),	
+				); 
+
+				break;
+			
+			
 		}
 	}
 	
@@ -179,7 +213,7 @@ class tl_module_readerpagination extends Backend
 //			'cal_past'     => array('past_7', 'past_14', 'past_30', 'past_90', 'past_180', 'past_365', 'past_two', 'past_cur_month', 'past_cur_year', 'past_all')
 		);
 	}
-	
+
 	
 }
 ?>
