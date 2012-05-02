@@ -71,6 +71,12 @@ class CatalogReaderPagination extends ModuleCatalog
 		$this->lblLast = $GLOBALS['TL_LANG']['MSC']['readerpaginations']['last'];
 		$this->lblTotal = $GLOBALS['TL_LANG']['MSC']['readerpaginations']['total'];
 		
+		// Return if empty
+		if(!$this->arrItems)
+		{
+			return '';
+		}
+		
 		// get current item index
 		foreach($this->arrItems as $index => $item)
 		{
@@ -297,6 +303,10 @@ class CatalogReaderPagination extends ModuleCatalog
 		
 		$arrEntries = $GLOBALS['READERPAGINATION']['catalog']; // created in CatalogReaderPaginationHelper, called from parseCatalog-HOOK
 		
+		if(count($arrEntries) < 1)
+		{
+			return '';
+		}
 		
 		// add keys for pagination (title, href)
 		foreach($arrEntries as $i => $entry)

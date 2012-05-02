@@ -52,7 +52,7 @@ class CatalogReaderPaginationHelper extends Frontend
 		
 		$this->pagination_format = $objModule->readerpagination_format;
 		$this->strTable = $arrCatalog[0]['catalog_name']; // $objModule->strTable; return NULL ?!
-				
+		
 		$time = time();
 		$strBegin;
 		$strEnd;
