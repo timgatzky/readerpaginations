@@ -51,7 +51,7 @@ class CatalogReaderPaginationHelper extends Frontend
 		$this->import('Database');
 		
 		$this->pagination_format = $objModule->readerpagination_format;
-		$this->strTable = $arrCatalog[0]['catalog_name']; // $objModule->strTable; return NULL ?!
+		$this->strTable = $arrCatalog[0]['tablename']; // $objModule->strTable; return NULL ?!
 		
 		$time = time();
 		$strBegin;
@@ -90,6 +90,18 @@ class CatalogReaderPaginationHelper extends Frontend
 					->execute($this->strTable);
 		$hideInPaginationField = $objHideInPaginationField->hide_in_pagination;
 		
+		// custom statement
+		$strCustomStmt = '';
+		
+		if(strlen($objModule->readerpagination_customsql))
+		{
+			$strCustomStmt = $objModule->readerpagination_customsql;
+		}
+		else
+		{
+			$strCustomStmt = 'ORDER BY sorting ASC';
+		}
+		
 		// collect all entries in scope
 		$objCatalogStmt = $this->Database->prepare("
 				SELECT 
@@ -99,7 +111,7 @@ class CatalogReaderPaginationHelper extends Frontend
 				WHERE id>=1 ". ($strBegin ? " AND (tstamp>$strBegin) AND (tstamp<$strEnd)" : "" ) . " 
 				" . ($publishField ? " AND $publishField=1 " : "" ) . " 
 				" . ($hideInPaginationField ? " AND $hideInPaginationField!=1 " : "" ) . "
-				ORDER BY sorting ASC
+				$strCustomStmt 
 				");
 		$objCatalog = $objCatalogStmt->execute();		
 		

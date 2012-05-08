@@ -36,6 +36,8 @@ $GLOBALS['TL_LANG']['tl_module']['addReaderPagination']						= array('Add a Pagi
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_template'] 				= array('Layout-Template', 'Choose your custom pagination template.');
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_numberOfLinks'] 			= array('Number of links', 'Choose the number of links.');
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_format'] 				= array('Scope', 'Choose the date format/date scope of the pagination');
+$GLOBALS['TL_LANG']['tl_module']['catalog_where']['1'] .= ' The sort order can be changed by e.g. ORDER BY myFeld ASC. Connect statements with an AND .';
+
 
 /**
  * References

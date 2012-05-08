@@ -37,7 +37,7 @@ $GLOBALS['TL_LANG']['tl_module']['readerpagination_template'] 				= array('Layou
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_numberOfLinks'] 			= array('Anzahl an Links', 'Legen Sie fest wieviele Links angezeigt werden.');
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_format'] 				= array('Anzeigeformat', 'Hier können Sie das Anzeigeformat/die Spannweite der Pagination auswählen.');
 $GLOBALS['TL_LANG']['tl_module']['readerpagination_catalogTitleField'] 		= array('Titelfeld', 'Bitte wählen Sie das Feld, das als Referenz für die Bildung des Link-Titels genutzt werden soll');
-
+$GLOBALS['TL_LANG']['tl_module']['catalog_where']['1'] .= ' Die Sortierreihenfolge ändern Sie mit z.B. ORDER BY meinFeld ASC. Mehrere Einträge mit AND verknüpfen.';
 
 /**
  * References
