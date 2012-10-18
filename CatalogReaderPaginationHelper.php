@@ -81,14 +81,18 @@ class CatalogReaderPaginationHelper extends Frontend
 		
 		
 		// Check if there is a publish field set
-		$objPublishField = $this->Database->prepare("SELECT publishField FROM tl_catalog_types WHERE tableName=?")
+		$objCatalogType = $this->Database->prepare("SELECT publishField,aliasField,hide_in_pagination FROM tl_catalog_types WHERE tableName=?")
 					->execute($this->strTable);
-		$publishField = $objPublishField->publishField;
+		
+		$publishField = $objCatalogType->publishField;
 		
 		// Check if there is a hide in pagination field set
-		$objHideInPaginationField = $this->Database->prepare("SELECT hide_in_pagination FROM tl_catalog_types WHERE tableName=?")
-					->execute($this->strTable);
-		$hideInPaginationField = $objHideInPaginationField->hide_in_pagination;
+		$hideInPaginationField = $objCatalogType->hide_in_pagination;
+		
+		// Check if an alias field is set
+		$aliasField = $objCatalogType->aliasField;
+		
+		
 		
 		// custom statement
 		$strCustomStmt = '';
@@ -116,6 +120,19 @@ class CatalogReaderPaginationHelper extends Frontend
 		$objCatalog = $objCatalogStmt->execute();		
 		
 		$arrCatalogForPagination = $objCatalog->fetchAllAssoc();
+		
+		// if the alias field is not set, overwrite alias with id
+		$tmp = array();
+		foreach($arrCatalogForPagination as $entry)
+		{
+			if(!strlen($aliasField))
+			{
+				$entry['alias'] = $entry['id'];
+			}
+			$tmp[] = $entry;
+		}
+		$arrCatalogForPagination = $tmp;
+		unset($tmp);
 		
 		$GLOBALS['READERPAGINATION']['catalog'] = $arrCatalogForPagination;
 		

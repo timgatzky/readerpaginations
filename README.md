@@ -12,4 +12,4 @@ This extension brings a new pagination option to the News-reader, Event-reader, 
     Number of links
     Pagination-Template/Layout-Template
 
-In Contao Version 2.9 the delivered template files must be copied to the /templates Folder manually.
+In Contao Version 2.9 the deliverd Module-Template files must be copied to the /templates Folder manually.
