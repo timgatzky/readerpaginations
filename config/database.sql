@@ -20,6 +20,7 @@ CREATE TABLE `tl_module` (
 	`readerpagination_numberOfLinks` int(10) NOT NULL default '7',
 	`readerpagination_format` varchar(255) NOT NULL default '',
 	`readerpagination_catalogTitleField` blob NULL,
+	`readerpagination_customsql` mediumtext NULL,
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 

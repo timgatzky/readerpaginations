@@ -47,7 +47,7 @@ array_insert($GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'],1,array
  */ 
 array_insert($GLOBALS['TL_DCA']['tl_module']['subpalettes'],1,array
 (
-	'addReaderPagination'	=> 'readerpagination_format,readerpagination_numberOfLinks,readerpagination_template',
+	'addReaderPagination'	=> 'readerpagination_format,readerpagination_numberOfLinks,readerpagination_template,readerpagination_customsql',
 ));
 
 
@@ -136,6 +136,13 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_catalogTitleField'] 
 	'eval'                    => array('tl_class'=>'clr', 'mandatory'=> false, 'submitOnChange'=> false)
 );
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_customsql'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['catalog_where'],
+	'exclude'                 => true,
+	'inputType'               => 'textarea',
+	'eval'                    => array('tl_class'=>'clr')
+);
 
 class tl_module_readerpagination extends Backend 
 {
@@ -145,6 +152,11 @@ class tl_module_readerpagination extends Backend
 	public function modifyPalette(DataContainer $dc)
 	{
 		$objModule = $this->Database->execute("SELECT type FROM " . $dc->table . " WHERE id=" . $dc->id);
+		if(!$objModule->numRows)
+		{
+			return $dc;
+		}
+		
 		switch($objModule->type)
 		{
 			case 'eventreader':
@@ -179,7 +191,7 @@ class tl_module_readerpagination extends Backend
 			case 'catalogreader':
 				
 				// add catalog title field selection to subpalette
-				$GLOBALS['TL_DCA']['tl_module']['subpalettes']['addReaderPagination'] = 'readerpagination_format,readerpagination_numberOfLinks,readerpagination_template,readerpagination_catalogTitleField';			
+				$GLOBALS['TL_DCA']['tl_module']['subpalettes']['addReaderPagination'] = 'readerpagination_format,readerpagination_numberOfLinks,readerpagination_template,readerpagination_catalogTitleField,readerpagination_customsql';			
 				
 				$GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_format'] = array
 				(
