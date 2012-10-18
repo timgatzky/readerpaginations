@@ -63,6 +63,7 @@ class CatalogReaderPagination extends ModuleCatalog
 		$this->arrItems = $this->getItems(); // Get catalog entries in scope
 		$this->intTotalItems = count($this->arrItems);
 		$this->intNumberOfLinks = $objModule->readerpagination_numberOfLinks;
+		$this->arrCatalog = $this->getCatalog();
 					
 		// Initialize default labels
 		$this->lblFirst = $GLOBALS['TL_LANG']['MSC']['readerpaginations']['first'];
@@ -167,6 +168,9 @@ class CatalogReaderPagination extends ModuleCatalog
 		
 		//$this->Template->total = $this->intTotal;
 		$this->Template->total = sprintf($this->lblTotal, $this->intItem, $this->intTotalItems);
+		
+		// #request: parse catalog data to template
+		$this->Template->entries = $this->arrCatalog;
 		
 		return $this->Template->parse();
 	}
@@ -342,8 +346,21 @@ class CatalogReaderPagination extends ModuleCatalog
 		return $arrEntries;
 	}
 	
-	
-	
+	/**
+	 * Get catalog entries as array
+	 * @return array
+	 */
+	private function getCatalog()
+	{
+		$arrEntries = $GLOBALS['READERPAGINATION']['catalog']; // created in CatalogReaderPaginationHelper, called from parseCatalog-HOOK
+		
+		if(count($arrEntries) < 1)
+		{
+			return array();
+		}
+		
+		return $arrEntries;
+	}
 
 }
 
