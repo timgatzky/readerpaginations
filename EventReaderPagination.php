@@ -84,6 +84,7 @@ class EventReaderPagination extends Events
 				if($item['id'] == $this->strItem) $this->intItem = $index;
 			}
 		}
+		
 	}
 	
 	/**
@@ -362,12 +363,11 @@ class EventReaderPagination extends Events
 			$sort($arrAllEvents[$key]);
 		}
 
-		$arrEvents = array();
 		$dateBegin = date('Ymd', $strBegin);
 		$dateEnd = date('Ymd', $strEnd);
 
-
 		// Remove events outside the scope AND events that should not be listet in the pagination
+		$arrTmp = array();
 		foreach ($arrAllEvents as $key=>$days)
 		{
 			if ($key < $dateBegin || $key > $dateEnd)
@@ -375,38 +375,52 @@ class EventReaderPagination extends Events
 				continue;
 			}
 			
-			
 			foreach ($days as $day=>$events)
 			{
 				foreach ($events as $event)
 				{
+					$id = $event['id'];
+					$pid = $event['pid'];
+					
 					$event['firstDay'] = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
 					$event['firstDate'] = $this->parseDate($objPage->dateFormat, $day);
-					$event['datetime'] = date('Y-m-d', $day);
+					$event['datetime'] = date($GLOBALS['TL_CONFIG']['dateFormat'], $day);
 					
 					if(!$event['hide_in_pagination'])
 					{
-						$arrEvents[] = $event;
+						// Short view fix: ignore duplicate events. (recurring events)
+						$arrTmp[$pid][$id] = $event;
 					}
+					
 				}
 			}
 		}
 		unset($arrAllEvents);
 
-		//-- Short view
-		$tmpArray = array();
-		$lastId = -1;
-		foreach($arrEvents as $key => $event)
+		$arrEvents = array();
+		// Short view fix: ignore duplicate events. (recurring events)
+		foreach($arrTmp as $pid)
 		{
-			// create a unique list, sort out events with the same id
-			if($lastId != $event['id'])
+			foreach($pid as $event)
 			{
-				$tmpArray[$key] = $event;
-				$lastId = $event['id'];
+				$arrEvents[] = $event;
 			}
-		}
-		//--
-		$arrEvents = $tmpArray;
+		}			
+
+		#//-- Short view
+		#$tmpArray = array();
+		#$lastId = -1;
+		#foreach($arrEvents as $key => $event)
+		#{
+		#	// create a unique list, sort out events with the same id
+		#	if($lastId != $event['id'])
+		#	{
+		#		$tmpArray[$key] = $event;
+		#		$lastId = $event['id'];
+		#	}
+		#}
+		#//--
+		#$arrEvents = $tmpArray;
 		
 		// Higher the keys of the array by 1
 		$tmpArray = array();
@@ -419,7 +433,7 @@ class EventReaderPagination extends Events
 		$arrEvents = $tmpArray;
 		
 		unset($tmpArray);
-
+		
 		return $arrEvents;
 	}
 	
