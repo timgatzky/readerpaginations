@@ -106,6 +106,10 @@ class CatalogReaderPaginationHelper extends Frontend
 			$strCustomStmt = 'ORDER BY sorting ASC';
 		}
 		
+		$strCustomStmt = html_entity_decode($strCustomStmt);
+		// replace inserttags
+		$strCustomStmt = $this->replaceInsertTags($strCustomStmt);
+		
 		// collect all entries in scope
 		$objCatalogStmt = $this->Database->prepare("
 				SELECT 

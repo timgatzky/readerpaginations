@@ -37,6 +37,7 @@ class CatalogReaderPagination extends ModuleCatalog
 	 */
 	protected $strTemplate = 'readerpagination_full';
 
+	protected $strAliasField;
 
 	/**
 	 * Initialize
@@ -53,9 +54,14 @@ class CatalogReaderPagination extends ModuleCatalog
 		// Apply settings
 		$this->strTemplate = $objModule->readerpagination_template;
 		
-		$this->archives = $objModule->news_archives;
+		// fetch alias field
+		$objCatalog = $this->Database->prepare("SELECT * FROM tl_catalog_types WHERE id=(SELECT catalog FROM tl_module WHERE id=?)")->limit(1)->execute($objModule->id);
+		
+		$this->strAliasField = $objCatalog->aliasField;
+		$this->strPublishField = $objCatalog->publishField;
+		$this->strCatTable = $objCatalog->tableName;
+		
 		$this->pagination_format = $objModule->readerpagination_format;
-		$this->strCatTable = $objModule->strTable;
 		$this->catalogTitleField = $objModule->readerpagination_catalogTitleField;
 		
 		$this->intItem = 1;
@@ -81,9 +87,9 @@ class CatalogReaderPagination extends ModuleCatalog
 		// get current item index
 		foreach($this->arrItems as $index => $item)
 		{
-			if(!$GLOBALS['TL_CONFIG']['disableAlias'])
+			if(!$GLOBALS['TL_CONFIG']['disableAlias'] && strlen($this->strAliasField) > 0)
 			{
-				if($item['alias'] == $this->strItem) $this->intItem = $index;
+				if($item[$this->strAliasField] == $this->strItem) $this->intItem = $index;
 			}
 			else
 			{
@@ -311,12 +317,21 @@ class CatalogReaderPagination extends ModuleCatalog
 		{
 			return '';
 		}
-		
+		 		
 		// add keys for pagination (title, href)
 		foreach($arrEntries as $i => $entry)
 		{
+			
 			// get alias
-       		$strAlias = (!$GLOBALS['TL_CONFIG']['disableAlias'] && $entry['alias'] != '') ? $entry['alias'] : $entry['id'];
+       		$strAlias = (!$GLOBALS['TL_CONFIG']['disableAlias'] && strlen($this->strAliasField) > 0) ? $entry[$this->strAliasField] : $entry['id'];
+ 			#if(strlen($this->strAliasField) > 0)
+       		#{
+       		#	$strAlias = (!$GLOBALS['TL_CONFIG']['disableAlias'] && $entry[$this->strAliasField] != '') ? $entry[$this->strAliasField] : $entry['id'];
+ 			#}
+ 			#else
+ 			#{
+	 		#	$strAlias = (!$GLOBALS['TL_CONFIG']['disableAlias'] && $entry['alias'] != '') ? $entry['alias'] : $entry['id'];
+ 			#}
  			
  			$arrTmp = array
  			(
