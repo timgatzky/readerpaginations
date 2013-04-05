@@ -92,8 +92,6 @@ class CatalogReaderPaginationHelper extends Frontend
 		// Check if an alias field is set
 		$aliasField = $objCatalogType->aliasField;
 		
-		
-		
 		// custom statement
 		$strCustomStmt = '';
 		
@@ -106,7 +104,18 @@ class CatalogReaderPaginationHelper extends Frontend
 			$strCustomStmt = 'ORDER BY sorting ASC';
 		}
 		
+		// HOOK: allow other extensions to modify the sql WHERE clause
+		if (isset($GLOBALS['TL_HOOKS']['readerpagination']['customsql']) && count($GLOBALS['TL_HOOKS']['readerpagination']['customsql']) > 0)
+		{
+			foreach($GLOBALS['TL_HOOKS']['readerpagination']['customsql'] as $callback)
+			{
+				$this->import($callback[0]);
+				$strCustomStmt = $this->$callback[0]->$callback[1]($strCustomStmt,$objCatalogType,$this);
+			}
+		}
+		
 		$strCustomStmt = html_entity_decode($strCustomStmt);
+		
 		// replace inserttags
 		$strCustomStmt = $this->replaceInsertTags($strCustomStmt);
 		
@@ -121,6 +130,7 @@ class CatalogReaderPaginationHelper extends Frontend
 				" . ($hideInPaginationField ? " AND $hideInPaginationField!=1 " : "" ) . "
 				$strCustomStmt 
 				");
+		
 		$objCatalog = $objCatalogStmt->execute();		
 		
 		$arrCatalogForPagination = $objCatalog->fetchAllAssoc();
