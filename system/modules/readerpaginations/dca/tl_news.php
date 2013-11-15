@@ -50,7 +50,8 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['hide_in_pagination'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_news']['hide_in_pagination'],
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
-	'eval'                    => array('tl_class'=>'w50 clr')
+	'eval'                    => array('tl_class'=>'w50 clr'),
+	'sql'					  => "char(1) NOT NULL default ''",
 );
 
 ?>

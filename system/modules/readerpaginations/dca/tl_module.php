@@ -52,6 +52,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['addReaderPagination'] = array
 	'exclude'           => true,
 	'inputType'         => 'checkbox',
 	'eval'              => array('submitOnChange'=>true, 'tl_class'=>'clr'),
+	'sql'				=> "char(1) NOT NULL default ''",
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_numberOfLinks'] = array
@@ -59,7 +60,8 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_numberOfLinks'] = ar
 	'label'				=> &$GLOBALS['TL_LANG']['tl_module']['readerpagination_numberOfLinks'],
 	'exclude'           => true,
 	'inputType'         => 'text',
-	'eval'              => array('rgxp'=>'digit', 'tl_class'=>'w50')
+	'eval'              => array('rgxp'=>'digit', 'tl_class'=>'w50'),
+	'sql'				=> "int(4) NOT NULL default '7'",
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_template'] = array
@@ -70,21 +72,24 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_template'] = array
 	'inputType'         => 'select',
 	'options'           => $this->getTemplateGroup('readerpagination_'),
 	'eval'              => array('includeBlankOption'=>false ,'tl_class'=>'w50'),
+	'sql'				=> "varchar(64) NOT NULL default ''",
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_format'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['readerpagination_format'],
-	'exclude'                 => true,
-	'inputType'               => 'select',
-	'reference'               => &$GLOBALS['TL_LANG']['tl_module']['readerpagination_format'],
-	'eval'                    => array('tl_class'=>'w50'),
+	'label'             => &$GLOBALS['TL_LANG']['tl_module']['readerpagination_format'],
+	'exclude'           => true,
+	'inputType'         => 'select',
+	'reference'         => &$GLOBALS['TL_LANG']['tl_module']['readerpagination_format'],
+	'eval'              => array('tl_class'=>'w50'),
+	'sql'				=> "varchar(32) NOT NULL default ''",
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_customsql'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['catalog_where'],
-	'exclude'                 => true,
-	'inputType'               => 'textarea',
-	'eval'                    => array('tl_class'=>'clr')
+	'label'             => &$GLOBALS['TL_LANG']['tl_module']['catalog_where'],
+	'exclude'           => true,
+	'inputType'         => 'textarea',
+	'eval'              => array('tl_class'=>'clr'),
+	'sql'				=> "mediumtext NULL",
 );
