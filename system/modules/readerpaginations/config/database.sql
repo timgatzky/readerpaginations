@@ -16,9 +16,9 @@
 
 CREATE TABLE `tl_module` (
   	`addReaderPagination` char(1) NOT NULL default '',
-	`readerpagination_template` varchar(255) NOT NULL default '',
-	`readerpagination_numberOfLinks` int(10) NOT NULL default '7',
-	`readerpagination_format` varchar(255) NOT NULL default '',
+	`readerpagination_template` varchar(64) NOT NULL default '',
+	`readerpagination_numberOfLinks` int(4) NOT NULL default '7',
+	`readerpagination_format` varchar(32) NOT NULL default '',
 	`readerpagination_customsql` mediumtext NULL,
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
