@@ -149,6 +149,9 @@ class EventReaderPagination extends \Events
 		//$this->Template->total = $this->intTotal;
 		$this->Template->total = sprintf($this->lblTotal, $this->intItem, $this->intTotalItems);
 		
+		$this->Template->raw = $this;
+		$this->Template->entries = $this->arrItems;
+		
 		return $this->Template->parse();
 	}
 
