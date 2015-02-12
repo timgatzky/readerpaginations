@@ -308,15 +308,26 @@ class NewsReaderPagination extends \ModuleNewsList
 			// Display all
 		}
 		
+		$strCustomWhere = '';
+		// HOOK: allow other extensions to modify the sql WHERE clause
+		if (isset($GLOBALS['TL_HOOKS']['readerpagination']['customsql_where']) && count($GLOBALS['TL_HOOKS']['readerpagination']['customsql_where']) > 0)
+		{
+			foreach($GLOBALS['TL_HOOKS']['readerpagination']['customsql_where'] as $callback)
+			{
+				$this->import($callback[0]);
+				$strCustomWhere = $this->$callback[0]->$callback[1]('news',$this);
+			}
+		}
+		
 		// Fetch all news that fit in the scope
 		$objArticlesStmt = $objDatabase->prepare("
         	SELECT * FROM tl_news
         	WHERE 
         		pid IN(" . implode(',', $this->archives) . ") AND published=1 AND hide_in_pagination!=1
         		" . (!BE_USER_LOGGED_IN ? " AND (start='' OR start<$time) AND (stop='' OR stop>$time)" : "") . "
-        		" . ($strBegin ? " AND (date>$strBegin) AND (date<$strEnd)" : "" ) . "
+        		" . ($strBegin ? " AND (date>$strBegin) AND (date<$strEnd)" : "" ) ." ".$strCustomWhere. "
         	ORDER BY date DESC");
-		
+	   
 		$objArticles = $objArticlesStmt->execute();
 		
 		if ($objArticles->numRows < 1)
@@ -326,6 +337,21 @@ class NewsReaderPagination extends \ModuleNewsList
 		
 		// get all articles
 		$arrArticles = $objArticles->fetchAllAssoc();
+		
+		// HOOK: allow other extensions to modify the items
+		if (isset($GLOBALS['TL_HOOKS']['readerpagination']['getItems']) && count($GLOBALS['TL_HOOKS']['readerpagination']['getItems']) > 0)
+		{
+			foreach($GLOBALS['TL_HOOKS']['readerpagination']['getItems'] as $callback)
+			{
+				$this->import($callback[0]);
+				$arrArticles = $this->$callback[0]->$callback[1]('news',$arrArticles,$this);
+			}
+		}
+		
+		if(count($arrArticles) < 1)
+		{
+			return array();
+		}
 		
 		// add keys for pagination (title, href)
 		foreach($arrArticles as $i => $article)
@@ -344,6 +370,11 @@ class NewsReaderPagination extends \ModuleNewsList
 		}
 		$arrArticles = $arrResult;
 		unset($arrResult);
+		
+		if(count($arrArticles) < 1)
+		{
+			return array();
+		}
 		
 		// Higher the keys of the array by 1
 		$arrTmp = array();

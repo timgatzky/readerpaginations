@@ -342,6 +342,22 @@ class EventReaderPagination extends \Events
 
 		// Get all events
 		$arrAllEvents = $this->getAllEvents($this->archives, $strBegin, $strEnd);
+		
+		// HOOK: allow other extensions to modify the items
+		if (isset($GLOBALS['TL_HOOKS']['readerpagination']['getItems']) && count($GLOBALS['TL_HOOKS']['readerpagination']['getItems']) > 0)
+		{
+			foreach($GLOBALS['TL_HOOKS']['readerpagination']['getItems'] as $callback)
+			{
+				$this->import($callback[0]);
+				$arrAllEvents = $this->$callback[0]->$callback[1]('events',$arrAllEvents,$this);
+			}
+		}
+		
+		if(count($arrAllEvents) < 1)
+		{
+			return array();
+		}
+		
 		$sort = ($this->cal_order == 'descending') ? 'krsort' : 'ksort'; 
 		
 		// Sort the days
@@ -385,7 +401,13 @@ class EventReaderPagination extends \Events
 			}
 		}
 		unset($arrAllEvents);
-
+		
+		
+		if(count($arrTmp) < 1)
+		{
+			return array();
+		}
+		
 		$arrEvents = array();
 		// Short view fix: ignore duplicate events. (recurring events)
 		foreach($arrTmp as $pid)
