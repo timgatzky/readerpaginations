@@ -84,12 +84,3 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_format'] = array
 	'eval'              => array('tl_class'=>'w50'),
 	'sql'				=> "varchar(32) NOT NULL default ''",
 );
-
-$GLOBALS['TL_DCA']['tl_module']['fields']['readerpagination_customsql'] = array
-(
-	'label'             => &$GLOBALS['TL_LANG']['tl_module']['catalog_where'],
-	'exclude'           => true,
-	'inputType'         => 'textarea',
-	'eval'              => array('tl_class'=>'clr'),
-	'sql'				=> "mediumtext NULL",
-);

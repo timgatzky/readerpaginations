@@ -5,7 +5,7 @@
  * 
  * Copyright (C) 2005-2013 Leo Feyer
  * 
- * @copyright	Tim Gatzky 2013
+ * @copyright	Tim Gatzky 2016
  * @author		Tim Gatzky <info@tim-gatzky.de>
  * @package		readerpaginations
  * @link		http://contao.org
@@ -31,29 +31,21 @@ function addReaderPagination($objModule)
 		throw new Exception('illegal call!');
 	}
 	
-	
 	$strBuffer = '';
 	switch($objModule->type)
 	{
 		case 'eventreader':
 			
-			$objPagination = new EventReaderPagination($objModule); 
+			$objPagination = new \EventReaderPagination($objModule); 
 			$strBuffer = $objPagination->generate();
 			
 			break;
 		case 'newsreader':
 			
-			$objPagination = new NewsReaderPagination($objModule); 
+			$objPagination = new \NewsReaderPagination($objModule); 
 			$strBuffer = $objPagination->generate();
 			
 			break;
-		case 'catalogreader':
-			
-			$objPagination = new CatalogReaderPagination($objModule); 
-			$strBuffer = $objPagination->generate();
-			
-			break;
-		
 		default: $strBuffer = '';
 			break;
 	}

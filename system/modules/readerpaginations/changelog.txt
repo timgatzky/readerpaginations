@@ -1,0 +1,3 @@
+### 3.0.0
+Remove: Anything related to the old catalog extension
+Remove: xhtml Templates

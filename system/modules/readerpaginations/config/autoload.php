@@ -17,8 +17,6 @@
 ClassLoader::addClasses(array
 (
 	// Classes
-	'CatalogReaderPagination'       => 'system/modules/readerpaginations/classes/CatalogReaderPagination.php',
-	'CatalogReaderPaginationHelper' => 'system/modules/readerpaginations/classes/CatalogReaderPaginationHelper.php',
 	'EventReaderPagination'         => 'system/modules/readerpaginations/classes/EventReaderPagination.php',
 	'NewsReaderPagination'          => 'system/modules/readerpaginations/classes/NewsReaderPagination.php',
 	'TableModuleReaderPaginations'  => 'system/modules/readerpaginations/classes/TableModuleReaderPaginations.php',
